@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital.Controllers
@@ -7,6 +8,13 @@ namespace Hospital.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IMediator mediator;
+
+        public UserController(IMediator mediator)
+        {
+            this.mediator = mediator;
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {

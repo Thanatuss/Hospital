@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using Domain.SQL.Users;
+using Infrastructure.Context;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +10,23 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.User.Query
 {
-    public class GetUserByIdCommand : IRequest<string out>
+    public class GetUserByIdCommand : IRequest<Domain.SQL.Users.User>
     {
         public string Id { get; set; }
     }
-    public class GetUserByIdHandler : IRequestHandler<GetUserByIdCommand, string out>
+    public class GetUserByIdHandler : IRequestHandler<GetUserByIdCommand, Domain.SQL.Users.User>
     {
-        public Task<string> Handle(GetUserByIdCommand request, CancellationToken cancellationToken)
+        private readonly ProgramDbContext _dbcontext;
+
+        public GetUserByIdHandler(ProgramDbContext dbcontext)
         {
-            throw new NotImplementedException();
+            _dbcontext = dbcontext;
+        }
+
+        public async Task<Domain.SQL.Users.User> Handle(GetUserByIdCommand request, CancellationToken cancellationToken)
+        {
+            var user = await _dbcontext.Users.AsNoTracking().Where(x => x.Id == request.Id);
+            return user;
         }
     }
 }
