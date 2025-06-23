@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.CQRS.User.Query;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,22 +9,24 @@ namespace Hospital.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IMediator mediator;
+        private readonly IMediator _mediator;
 
         public UserController(IMediator mediator)
         {
-            this.mediator = mediator;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(GetAllUserCommand request , CancellationToken cancellation)
         {
-            return Ok();
+            var result = _mediator.Send(request, cancellation);
+            return Ok(result);
         }
         [HttpGet("{id}")]
-        public IActionResult GetById(string id)
+        public IActionResult GetById(GetUserByIdCommand request , CancellationToken cancellationToken)
         {
-            return Ok();
+            var result = _mediator.Send(request, cancellationToken);
+            return Ok(result);
         }
         [HttpPost]
         public IActionResult CraeteUser()
