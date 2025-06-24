@@ -15,6 +15,13 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseSwaggerUI();
     app.UseSwagger();
+    app.Use(async (context, next) =>
+    {
+        context.Response.Redirect("swagger/index.html");
+        return;
+        await next();
+    }
+    );
 }
 
 app.UseHttpsRedirection();

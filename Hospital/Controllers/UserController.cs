@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Hospital.Controllers
 {
@@ -16,29 +17,30 @@ namespace Hospital.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet]
-        public IActionResult GetAll(GetAllUserCommand request , CancellationToken cancellation)
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll( CancellationToken cancellation)
         {
-            var result = _mediator.Send(request, cancellation);
+            var request = new GetAllUserCommand { };
+            var result = await _mediator.Send(request , cancellation);
             return Ok(result);
         }
-        [HttpGet("{id}")]
-        public IActionResult GetById(GetUserByIdCommand request , CancellationToken cancellationToken)
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById(GetUserByIdCommand request , CancellationToken cancellationToken)
         {
-            var result = _mediator.Send(request, cancellationToken);
+            var result = await _mediator.Send(request, cancellationToken);
             return Ok(result);
         }
-        [HttpPost]
+        [HttpPost("Create")]
         public IActionResult CraeteUser()
         {
             return Ok();
         }
-        [HttpDelete]
+        [HttpDelete("Delete")]
         public IActionResult Delete()
         {
             return Ok();
         }
-        [HttpPut]
+        [HttpPut("Edit")]
         public IActionResult Edit()
         {
             return Ok();

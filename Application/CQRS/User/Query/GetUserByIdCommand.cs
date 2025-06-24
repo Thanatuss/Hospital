@@ -25,7 +25,7 @@ namespace Application.CQRS.User.Query
 
         public async Task<Domain.SQL.Users.User> Handle(GetUserByIdCommand request, CancellationToken cancellationToken)
         {
-            var user = await _dbcontext.Users.AsNoTracking().Where(x => x.Id == request.Id);
+            var user = await _dbcontext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == Convert.ToInt32(request.Id));
             return user;
         }
     }

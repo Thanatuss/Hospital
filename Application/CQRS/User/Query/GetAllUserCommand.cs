@@ -1,21 +1,17 @@
 ﻿using Infrastructure.Context;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+
 namespace Application.CQRS.User.Query
 {
-    public class GetAllUserCommand : IRequest<Domain.SQL.Users.User>
+    public class GetAllUserCommand : IRequest<List<Domain.SQL.Users.User>>
     {
-        public GetAllUserCommand()
-        {
-            
-        }
     }
-    public class GetAllUserHandler : IRequestHandler<GetAllUserCommand, Domain.SQL.Users.User>
+
+    public class GetAllUserHandler : IRequestHandler<GetAllUserCommand, List<Domain.SQL.Users.User>>
     {
         private readonly ProgramDbContext _dbcontext;
 
@@ -24,10 +20,14 @@ namespace Application.CQRS.User.Query
             _dbcontext = dbcontext;
         }
 
-        public async Task<Domain.SQL.Users.User> Handle(GetAllUserCommand request, CancellationToken cancellationToken)
+        public async Task<List<Domain.SQL.Users.User>> Handle(GetAllUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _dbcontext.Users.AsNoTracking().Where(x => x.IsDeleted == false).tolist();
-            return user;
+            var users = await _dbcontext.Users
+                .AsNoTracking()
+                .Where(x => !x.IsDeleted)
+                .ToListAsync(cancellationToken);
+
+            return users;
         }
     }
 }
