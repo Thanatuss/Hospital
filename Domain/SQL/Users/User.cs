@@ -11,7 +11,7 @@ namespace Domain.SQL.Users
         public string Username { get; set; }
         public string Password { get; set; }
         public UserRole Role { get; set; }
-        public Admin? Admin { get; set; }
+        //public Admin Admin { get; set; }
         //public UserRole Role { get; set; }
         //public UserRole Role { get; set; }
 
