@@ -1,4 +1,5 @@
-﻿using Application.CQRS.User.Query;
+﻿using Application.CQRS.User.Command;
+using Application.CQRS.User.Query;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,14 +32,16 @@ namespace Hospital.Controllers
             return Ok(result);
         }
         [HttpPost("Create")]
-        public IActionResult CraeteUser()
+        public IActionResult CraeteUser([FromQuery]CreateUserCommand request , CancellationToken cancellationToken)
         {
-            return Ok();
+            var result = _mediator.Send(request , cancellationToken);
+            return Ok(request);
         }
         [HttpDelete("Delete")]
-        public IActionResult Delete()
+        public IActionResult Delete(DeleteUserCommand requst , CancellationToken cancellationToken)
         {
-            return Ok();
+            var result = _mediator.Send(requst, cancellationToken);
+            return Ok(result);
         }
         [HttpPut("Edit")]
         public IActionResult Edit()
