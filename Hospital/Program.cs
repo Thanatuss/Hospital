@@ -1,5 +1,6 @@
 using Application.CQRS.User.Query;
 using Infrastructure.Context;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -15,7 +16,17 @@ builder.Services.AddDbContext<ProgramDbContext>(options =>
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(GetAllUserCommand).Assembly);
-}); 
+});
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    
+}
+).AddJwtBearer(options =>
+{
+
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

@@ -26,21 +26,25 @@ namespace Hospital.Controllers
             return Ok(result);
         }
         [HttpGet("GetById")]
-        public async Task<IActionResult> GetById(GetUserByIdCommand request , CancellationToken cancellationToken)
+        public async Task<IActionResult> GetById(string id, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(request, cancellationToken);
+            var command = new GetUserByIdCommand
+            {
+                Id = id
+            };
+            var result = await _mediator.Send(command, cancellationToken);
             return Ok(result);
         }
         [HttpPost("Create")]
-        public IActionResult CraeteUser([FromQuery]CreateUserCommand request , CancellationToken cancellationToken)
+        public async Task<IActionResult> CraeteUser([FromBody]CreateUserCommand request , CancellationToken cancellationToken)
         {
-            var result = _mediator.Send(request , cancellationToken);
-            return Ok(request);
+            var result = await _mediator.Send(request , cancellationToken);
+            return Ok(request.createUser);
         }
         [HttpDelete("Delete")]
-        public IActionResult Delete(DeleteUserCommand requst , CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete(DeleteUserCommand requst , CancellationToken cancellationToken)
         {
-            var result = _mediator.Send(requst, cancellationToken);
+            var result = await _mediator.Send(requst, cancellationToken);
             return Ok(result);
         }
         [HttpPut("Edit")]
@@ -48,5 +52,6 @@ namespace Hospital.Controllers
         {
             return Ok();
         }
+        
     }
 }
