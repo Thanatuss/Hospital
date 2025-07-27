@@ -39,21 +39,26 @@ namespace Application.DTO
             var user = await _dbContext.Users.AnyAsync(x => x.IsDeleted == false && x.Nationalcode == request.Nationalcode);
             if(user is not false)
             {
-                var claims = new[]
+                    var claims = new[]
+                    {
+                        new Claim(ClaimTypes.Name , request.Fullname),
+                        new Claim(ClaimTypes.Name , request.Nationalcode)
+                    };
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsASecretKeyThatIsLongEnoughToBeSecure123!!"));
+                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                    var token = new JwtSecurityToken(
+                        issuer: "Hospital",
+                        audience: "Admin",
+                        claims: claims,
+                        expires: DateTime.Now.AddHours(1),
+                        signingCredentials: creds
+                        );
+                    var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+                return jwt;
+            }
+            else
             {
-                new Claim(ClaimTypes.Name , Fullname),
-                new Claim(ClaimTypes.Name , nationalCode)
-            };
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsASecretKeyThatIsLongEnoughToBeSecure123!!"));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                var token = new JwtSecurityToken(
-                    issuer: "Hospital",
-                    audience: "Admin",
-                    claims: claims,
-                    expires: DateTime.Now.AddHours(1),
-                    signingCredentials: creds
-                    );
-                var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+                throw new Exception("User not found");
             }
         }
     }
