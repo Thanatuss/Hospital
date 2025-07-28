@@ -1,5 +1,6 @@
 ﻿using Application.CQRS.User.Command;
 using Application.CQRS.User.Query;
+using Application.DTO;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -57,24 +58,14 @@ namespace Hospital.Controllers
             return Ok();
         }
         [HttpPut("Login")]
-        public IActionResult Login(string Fullname, string nationalCode)
+        public async Task<IActionResult> Login(string Fullname, string nationalCode)
         {
-            var claims = new[]
+            var request = await _mediator.Send(new LoginCommand
             {
-                new Claim(ClaimTypes.Name , Fullname),
-                new Claim(ClaimTypes.Name , nationalCode)
-            };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsASecretKeyThatIsLongEnoughToBeSecure123!!"));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                issuer: "Hospital",
-                audience: "Admin",
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds
-                );
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return Ok(new { token = jwt});
+                Fullname = Fullname , 
+                Nationalcode = nationalCode
+            });
+            return Ok(request);
         }
 
     }
