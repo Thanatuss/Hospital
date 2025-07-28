@@ -53,14 +53,15 @@ namespace Hospital.Controllers
             return Ok(result);
         }
         [HttpPut("Edit")]
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit(EditUserCommand request , CancellationToken cancellationToken)
         {
-            return Ok();
+            var result = await _mediator.Send(request , cancellationToken);
+            return Ok(result);
         }
         [HttpPut("Login")]
         public async Task<IActionResult> Login(string Fullname, string nationalCode)
         {
-            var request = await _mediator.Send(new LoginCommand
+            var request = await _mediator.Send(new Application.Services.LoginCommand
             {
                 Fullname = Fullname , 
                 Nationalcode = nationalCode
