@@ -1,6 +1,7 @@
 ﻿using Application.CQRS.User.Command;
 using Application.CQRS.User.Query;
 using Application.DTO;
+using Application.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -53,9 +54,9 @@ namespace Hospital.Controllers
             return Ok(result);
         }
         [HttpPut("Edit")]
-        public async Task<IActionResult> Edit(EditUserCommand request , CancellationToken cancellationToken)
+        public async Task<IActionResult> Edit(EditUserCommand request, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(request , cancellationToken);
+            var result = await _mediator.Send(request, cancellationToken);
             return Ok(result);
         }
         [HttpPut("Login")]
@@ -63,10 +64,21 @@ namespace Hospital.Controllers
         {
             var request = await _mediator.Send(new Application.Services.LoginCommand
             {
-                Fullname = Fullname , 
+                Fullname = Fullname,
                 Nationalcode = nationalCode
             });
             return Ok(request);
+        }
+        [HttpGet("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var authHeader = Request.Headers["Authorization"].ToString();
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+                return Unauthorized("Token is missing or invalid");
+
+            var token = authHeader.Replace("Bearer ", "").Trim();
+            var result = _mediator.Send(new LogoutCommand {  Token = token });
+            return Ok(result);
         }
 
     }

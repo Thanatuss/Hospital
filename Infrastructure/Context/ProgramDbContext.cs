@@ -1,10 +1,6 @@
-﻿using Domain.SQL.Users;
+﻿using Domain.SQL.Token;
+using Domain.SQL.Users;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Context
 {
@@ -15,5 +11,6 @@ namespace Infrastructure.Context
             
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<BlackListToken> BlackToken { get; set; }
     }
 }
