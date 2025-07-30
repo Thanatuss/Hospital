@@ -1,6 +1,6 @@
-﻿using MediatR;
+﻿using Application.CQRS.Profile.Query;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital.Controllers
@@ -20,8 +20,8 @@ namespace Hospital.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var result = _mediator.Send();
-            return Ok();
+            var result = _mediator.Send(new GetProfileCommand());
+            return Ok(result);
         }
     }
 }
